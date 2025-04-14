@@ -1,0 +1,46 @@
+sudo snap install k8s --classic
+sudo snap install helm --classic
+
+sudo k8s bootstrap
+
+sudo k8s status
+sudo k8s kubectl get all --all-namespaces
+cp /etc/Kubernetes/admin.conf /root/.kube/config
+
+# Add kubernetes-dashboard repository
+helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
+# Deploy a Helm Release named "kubernetes-dashboard" using the kubernetes-dashboard chart
+helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --create-namespace --namespace kubernetes-dashboard
+
+
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: admin-user
+  namespace: kubernetes-dashboard
+
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: admin-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: admin-user
+  namespace: kubernetes-dashboard
+
+
+kubectl -n kubernetes-dashboard create token admin-user
+
+
+
+
+helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+
+
+helm install my-otel-demo open-telemetry/opentelemetry-demo
