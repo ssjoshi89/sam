@@ -1,0 +1,4 @@
+module "adot_example_setup-with-otel-config" {
+  source  = "makandra/adot/eks//examples/setup-with-otel-config"
+  version = "1.0.4"
+}
